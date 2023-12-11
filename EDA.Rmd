@@ -1,0 +1,193 @@
+---
+title: "EDA"
+author: "Namuun"
+date: "2023-12-11"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+data(ames)
+head(ames)
+```
+```{r}
+
+library(ggplot2)
+
+# Load data
+data <- read.csv("data/ames.csv")
+
+# Function to plot histogram with mean line
+plot_histogram <- function(df, column, title, xlabel, ylabel) {
+  # Extract the relevant data
+  data <- df[[column]]
+  mean_val <- mean(data)
+  
+  # Set up plot
+  par(mfrow=c(1,1), mar=c(5,4,4,2)+0.1)
+  
+  # Plot histogram
+  hist(data, col="skyblue", main=title, xlab=xlabel, ylab=ylabel, border="black", breaks="FD")
+
+  # Add vertical line for mean
+  abline(v=mean_val, col="red", lwd=2)
+
+  # Add legend
+  legend("topright", legend=c("Mean"), col=c("red"), lwd=2)
+}
+
+# Example usage
+data <- read.csv("data/ames.csv")
+plot_histogram(
+  data,
+  "SalePrice",
+  "Distribution of Sale Prices",
+  "Sale Price",
+  "Number of Houses"
+)
+```
+
+
+
+```{r}
+# Function to print statistics
+print_stats <- function(df, column) {
+  cat("Mean:               ", mean(df[[column]]), "\n")
+  cat("Median:             ", median(df[[column]]), "\n")
+  cat("Standard Deviation: ", sd(df[[column]]), "\n")
+}
+
+# Example usage
+data <- read.csv("data/ames.csv")
+print_stats(data, "SalePrice")
+```
+```{r}
+# Reusing the plot_histogram function
+plot_histogram <- function(df, column, title, xlabel, ylabel) {
+  # Extract the relevant data
+  data <- df[[column]]
+  mean_val <- mean(data)
+  
+  # Set up plot
+  par(mfrow=c(1,1), mar=c(5,4,4,2)+0.1)
+  
+  # Plot histogram
+  hist(data, col="skyblue", main=title, xlab=xlabel, ylab=ylabel, border="black", breaks="FD")
+
+  # Add vertical line for mean
+  abline(v=mean_val, col="red", lwd=2)
+
+  # Add legend
+  legend("topright", legend=c("Mean"), col=c("red"), lwd=2)
+}
+
+# Example usage for "TotRmsAbvGrd"
+plot_histogram(
+  data,
+  "TotRmsAbvGrd",
+  "Distribution of Total Rooms Above Grade",
+  "Total Rooms (Does Not Include Bathrooms)",
+  "Number of Houses"
+)
+
+```
+```{r}
+# Function to print statistics
+print_stats <- function(df, column) {
+  cat("Mean:               ", mean(df[[column]]), "\n")
+  cat("Median:             ", median(df[[column]]), "\n")
+  cat("Standard Deviation: ", sd(df[[column]]), "\n")
+}
+
+# Example usage for "TotRmsAbvGrd"
+print_stats(data, "TotRmsAbvGrd")
+
+```
+```{r}
+# Reusing the plot_histogram function
+plot_histogram <- function(df, column, title, xlabel, ylabel) {
+  # Extract the relevant data
+  data <- df[[column]]
+  mean_val <- mean(data)
+  
+  # Set up plot
+  par(mfrow=c(1,1), mar=c(5,4,4,2)+0.1)
+  
+  # Plot histogram
+  hist(data, col="skyblue", main=title, xlab=xlabel, ylab=ylabel, border="black", breaks="FD")
+
+  # Add vertical line for mean
+  abline(v=mean_val, col="red", lwd=2)
+
+  # Add legend
+  legend("topright", legend=c("Mean"), col=c("red"), lwd=2)
+}
+
+# Example usage for "OverallCond"
+plot_histogram(
+  data,
+  "OverallCond",
+  "Distribution of Overall Condition of Houses on a 1-10 Scale",
+  "Condition of House",
+  "Number of Houses"
+)
+
+```
+```{r}
+# Filter data into three conditions
+below_average_condition <- data[data$OverallCond < 5, ]
+average_condition <- data[data$OverallCond == 5, ]
+above_average_condition <- data[data$OverallCond > 5, ]
+
+# Set up plot
+par(mfrow=c(1,1), mar=c(5,4,4,2)+0.1)
+plot_title <- "Distributions of Sale Price Grouped by Condition"
+x_label <- "Sale Price"
+y_label <- "Number of Houses"
+
+# Create custom bins so all are on the same scale
+bins <- seq(min(data$SalePrice), max(data$SalePrice), length.out = 21)
+
+# Plot three histograms, with reduced opacity (col and density) so we
+# can see them overlapping
+hist(
+  above_average_condition$SalePrice,
+  main=plot_title,
+  xlab=x_label,
+  ylab=y_label,
+  col=rgb(0, 1, 1, alpha=0.5),
+  xlim=c(min(data$SalePrice), max(data$SalePrice)),
+  breaks=bins,
+  density=30,
+  add=FALSE
+)
+hist(
+  average_condition$SalePrice,
+  col=rgb(0.5, 0.5, 0.5, alpha=0.3),
+  breaks=bins,
+  density=30,
+  add=TRUE
+)
+hist(
+  below_average_condition$SalePrice,
+  col=rgb(1, 1, 0, alpha=0.5),
+  breaks=bins,
+  density=30,
+  add=TRUE
+)
+
+# Add legend
+legend("topright", 
+       legend=c("above average condition", "average condition", "below average condition"), 
+       fill=c(rgb(0, 1, 1, alpha=0.5), rgb(0.5, 0.5, 0.5, alpha=0.3), rgb(1, 1, 0, alpha=0.5)))
+
+# Customize labels
+title(plot_title, line=1.5, cex.main=1.2)
+
+```
+
+
